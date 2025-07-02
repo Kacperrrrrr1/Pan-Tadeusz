@@ -1,45 +1,76 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
     <title>Pan Tadeusz</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</head>
-<body>
+  </head>
+  <body>
     <header class="container">
-        <h1 class="text-center">Pan Tadeusz, czyli ostatni zajazd na Litwie: historia szlachecka z roku 1811 i 1812 we dwunastu księgach wierszem</h1>
+      <h1 class="text-center">
+        Pan Tadeusz czyli ostatni zajazd na Litwie: historia szlachecka z roku
+        1811 i 1812 we dwunastu księgach wierszem
+      </h1>
     </header>
     <section class="container">
-        <div class="row">
-            <div class="col-4">
-                <div class="list-group">
-                    <a href="./" class="list-group-item list-group-item-action">Strona główna</a>
-                    <?php 
-                    for ($i=1;$i<=12;$i++){
-                        $active = isset($_GET['k']) && $_GET['k'] == $i ? "active" : "";
-                        echo("<a href='./index.php?k=$i' class='list-group-item list-group-item-action $active'>Księga $i</a>");
-                    }
-                    ?>
-
-                </div>
-            </div>
-            <div class="col-8">
-                  <?php
-                    if(isset($_GET['k'])){
-                        $k=$_GET['k'];
-                        include_once("./k".$k.".html");
-                    }else{
-                        echo("");
-                    }
-                ?>
-                <img src="./pantadeusz.png" alt="Pan Tadeusz" class="img-fluid img-thumbnail">
-            </div>
+      <div class="row">
+        <div class="col-4">
+          <div class="list-group" id="toc">
+            <a
+              href="./"
+              class="list-group-item list-group-item-action"
+              aria-current="true"
+            >
+              Strona glówna
+            </a>
+          </div>
         </div>
+        <div class="col-8" id="content"></div>
+      </div>
     </section>
     <footer class="container">
-        <p class="text-center">Kacper Szwajnos, Akademia Nauk Stosowanych w Nowym Targu</p>
+      <p class="text-center">
+        Kacper Szwajnos, Akademia Nauk Stosowanych w Nowym Targu
+      </p>
     </footer>
-</body>
-</html>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript">
+      for (let i = 1; i <= 12; i++) {
+        let link = document.createElement("a");
+        link.href = `index.html?k=${i}`;
+        link.className = "list-group-item list-group-item-action";
+        link.textContent = `Księga ${i}`;
+        document.querySelector("#toc").appendChild(link);
+      }
+      const url = new URL(window.location.href);
+      const k = url.searchParams.get("k");
+      if (k) {
+        document
+          .querySelector(`a[href="index.html?k=${k}"]`)
+          .classList.add("active");
 
+        fetch(`./k${k}.html`)
+          .then((response) => response.text())
+          .then(
+            (data) => (document.querySelector("#content").innerHTML = data)
+          );
+      } else {
+        const image = document.createElement("img");
+        image.src = "./pantadeusz.jpg";
+        image.classList = "img-fluid img-thumbnail";
+        image.alt = "Pan Tadeusz";
+        document.querySelector("#content").appendChild(image);
+      }
+    </script>
+  </body>
+</html>
